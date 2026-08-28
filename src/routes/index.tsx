@@ -1,18 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { SPACES } from "@/lib/spaces";
+import { useEffect, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { getSpaceClient } from "@/lib/spaces";
+import { translateError } from "@/components/SpaceAuth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "مداوروس — فضاءات التلاميذ والتعليم والإدارة" },
+      { title: "مداوروس — فضاء التلاميذ" },
       {
         name: "description",
-        content: "منصة مداوروس: ثلاثة فضاءات منفصلة للتلاميذ والأساتذة والإدارة مع جلسات مستقلة ومصادقة المشرف العام.",
+        content: "منصة مداوروس: فضاء التلاميذ للدخول المباشر إلى الدروس والواجبات.",
       },
-      { property: "og:title", content: "مداوروس — ثلاثة فضاءات، جلسات منفصلة" },
+      { property: "og:title", content: "مداوروس — فضاء التلاميذ" },
       {
         property: "og:description",
-        content: "سجّل الدخول إلى فضاء التلاميذ أو التعليم أو الإدارة على منصة مداوروس.",
+        content: "سجّل الدخول إلى فضاء التلاميذ على منصة مداوروس.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -21,14 +23,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const colors: Record<string, string> = {
-  talameed: "text-brand-blue",
-  taleem: "text-brand-green",
-};
-
 function Index() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-10 bg-canvas px-4 py-16">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-canvas px-4 py-16">
       <div className="text-center">
         <div dir="ltr" className="font-wordmark text-5xl tracking-tight">
           <span className="text-brand-green">m</span>
@@ -40,36 +37,136 @@ function Index() {
           <span className="text-brand-red">o</span>
           <span className="text-brand-red">s</span>
         </div>
-        <h1 className="mt-4 text-xl font-normal text-foreground">اختر فضاءك</h1>
+        <h1 className="mt-4 text-xl font-normal text-foreground">فضاء التلاميذ</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          كل فضاء له جلسة دخول مستقلة تماماً عن الفضاءات الأخرى
+          سجّل الدخول للوصول إلى دروسك وواجباتك
         </p>
       </div>
 
-      <div className="grid w-full max-w-3xl gap-4 sm:grid-cols-2">
-        {Object.values(SPACES)
-          .filter((s) => s.key !== "admin")
-          .map((s) => (
-            <Link
-              key={s.key}
-              to={s.path}
-              className="rounded-2xl border border-border bg-card p-6 text-center transition-shadow hover:shadow-lg"
-            >
-              <div dir="ltr" className={`font-wordmark text-lg ${colors[s.key]}`}>
-                {s.host}
-              </div>
-              <div className="mt-3 text-base font-semibold text-foreground">{s.title}</div>
-              <p className="mt-2 text-xs text-muted-foreground">{s.subtitle}</p>
-            </Link>
-          ))}
-      </div>
+      <StudentLogin />
 
-      <Link
-        to="/admin"
-        className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
-      >
-        وصول الإدارة
-      </Link>
+      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <Link to="/taleem" className="underline underline-offset-4 hover:text-foreground">
+          وصول الأساتذة
+        </Link>
+        <span className="text-border">|</span>
+        <Link to="/admin" className="underline underline-offset-4 hover:text-foreground">
+          وصول الإدارة
+        </Link>
+      </div>
     </main>
+  );
+}
+
+function StudentLogin() {
+  const navigate = useNavigate();
+  const client = getSpaceClient("talameed");
+
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    client.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/talameed" });
+    });
+  }, [client, navigate]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+
+    if (mode === "signup") {
+      const { error: err } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/talameed`,
+          data: { space: "talameed" },
+        },
+      });
+      if (err) setError(translateError(err.message));
+      else setMessage("تم إنشاء الحساب. تحقّق من بريدك الإلكتروني لتأكيده، ثم انتظر مصادقة المشرف.");
+    } else {
+      const { error: err } = await client.auth.signInWithPassword({ email, password });
+      if (err) {
+        setError(translateError(err.message));
+      } else {
+        navigate({ to: "/talameed" });
+      }
+    }
+
+    setBusy(false);
+  };
+
+  return (
+    <div className="w-full max-w-[420px] rounded-[28px] border border-border bg-card px-8 py-10 sm:px-10">
+      <h2 className="text-center text-2xl font-normal text-foreground">
+        {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+      </h2>
+      <p className="mt-2 text-center text-sm text-muted-foreground">talameed.madauros</p>
+
+      <form onSubmit={submit} className="mt-8 space-y-5">
+        <div className="field">
+          <input
+            id="email"
+            type="email"
+            required
+            dir="ltr"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder=" "
+            className="field-input"
+            autoComplete="email"
+          />
+          <label htmlFor="email" className="field-label">
+            البريد الإلكتروني
+          </label>
+        </div>
+
+        <div className="field">
+          <input
+            id="password"
+            type="password"
+            required
+            dir="ltr"
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder=" "
+            className="field-input"
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
+          />
+          <label htmlFor="password" className="field-label">
+            كلمة المرور
+          </label>
+        </div>
+
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        {message ? <p className="text-sm text-success">{message}</p> : null}
+
+        <div className="flex items-center justify-between pt-2">
+          <button
+            type="button"
+            className="btn-text"
+            onClick={() => {
+              setMode(mode === "login" ? "signup" : "login");
+              setError(null);
+              setMessage(null);
+            }}
+          >
+            {mode === "login" ? "إنشاء حساب" : "لدي حساب بالفعل"}
+          </button>
+          <button type="submit" disabled={busy} className="btn-primary">
+            {busy ? "…" : mode === "login" ? "التالي" : "تسجيل"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

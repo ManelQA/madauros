@@ -192,7 +192,7 @@ export function SpaceAuth({ space, children }: Props) {
   );
 }
 
-function translateError(msg: string) {
+export function translateError(msg: string) {
   if (/Invalid login credentials/i.test(msg)) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
   if (/already registered/i.test(msg)) return "هذا البريد الإلكتروني مسجّل مسبقاً.";
   if (/Password should be/i.test(msg)) return "كلمة المرور قصيرة جداً (6 أحرف على الأقل).";
