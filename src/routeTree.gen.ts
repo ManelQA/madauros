@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TalameedRouteImport } from './routes/talameed'
 import { Route as TaleemRouteImport } from './routes/taleem'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TalameedRoute = TalameedRouteImport.update({
@@ -38,12 +44,14 @@ const TaleemRoute = TaleemRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/talameed': typeof TalameedRoute
   '/taleem': typeof TaleemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/talameed': typeof TalameedRoute
   '/taleem': typeof TaleemRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/talameed': typeof TalameedRoute
   '/taleem': typeof TaleemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/talameed' | '/taleem'
+  fullPaths: '/' | '/admin' | '/reset-password' | '/talameed' | '/taleem'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/talameed' | '/taleem'
-  id: '__root__' | '/' | '/admin' | '/talameed' | '/taleem'
+  to: '/' | '/admin' | '/reset-password' | '/talameed' | '/taleem'
+  id: '__root__' | '/' | '/admin' | '/reset-password' | '/talameed' | '/taleem'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TalameedRoute: typeof TalameedRoute
   TaleemRoute: typeof TaleemRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/talameed': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TalameedRoute: TalameedRoute,
   TaleemRoute: TaleemRoute,
 }
