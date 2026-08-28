@@ -24,7 +24,6 @@ export const Route = createFileRoute("/")({
 const colors: Record<string, string> = {
   talameed: "text-brand-blue",
   taleem: "text-brand-green",
-  admin: "text-brand-red",
 };
 
 function Index() {
@@ -47,21 +46,30 @@ function Index() {
         </p>
       </div>
 
-      <div className="grid w-full max-w-4xl gap-4 sm:grid-cols-3">
-        {Object.values(SPACES).map((s) => (
-          <Link
-            key={s.key}
-            to={s.path}
-            className="rounded-2xl border border-border bg-card p-6 text-center transition-shadow hover:shadow-lg"
-          >
-            <div dir="ltr" className={`font-wordmark text-lg ${colors[s.key]}`}>
-              {s.host}
-            </div>
-            <div className="mt-3 text-base font-semibold text-foreground">{s.title}</div>
-            <p className="mt-2 text-xs text-muted-foreground">{s.subtitle}</p>
-          </Link>
-        ))}
+      <div className="grid w-full max-w-3xl gap-4 sm:grid-cols-2">
+        {Object.values(SPACES)
+          .filter((s) => s.key !== "admin")
+          .map((s) => (
+            <Link
+              key={s.key}
+              to={s.path}
+              className="rounded-2xl border border-border bg-card p-6 text-center transition-shadow hover:shadow-lg"
+            >
+              <div dir="ltr" className={`font-wordmark text-lg ${colors[s.key]}`}>
+                {s.host}
+              </div>
+              <div className="mt-3 text-base font-semibold text-foreground">{s.title}</div>
+              <p className="mt-2 text-xs text-muted-foreground">{s.subtitle}</p>
+            </Link>
+          ))}
       </div>
+
+      <Link
+        to="/admin"
+        className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+      >
+        وصول الإدارة
+      </Link>
     </main>
   );
 }
