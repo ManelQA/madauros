@@ -32,14 +32,14 @@ function Index() {
     <main className="flex min-h-screen flex-col items-center justify-center gap-10 bg-canvas px-4 py-16">
       <div className="text-center">
         <div dir="ltr" className="font-wordmark text-5xl tracking-tight">
-          <span className="text-brand-blue">m</span>
+          <span className="text-brand-green">m</span>
           <span className="text-brand-red">a</span>
-          <span className="text-brand-yellow">d</span>
-          <span className="text-brand-blue">a</span>
+          <span className="text-brand-green">d</span>
+          <span className="text-brand-red">a</span>
           <span className="text-brand-green">u</span>
           <span className="text-brand-red">r</span>
-          <span className="text-brand-blue">o</span>
-          <span className="text-brand-yellow">s</span>
+          <span className="text-brand-green">o</span>
+          <span className="text-brand-red">s</span>
         </div>
         <h1 className="mt-4 text-xl font-normal text-foreground">اختر فضاءك</h1>
         <p className="mt-2 text-sm text-muted-foreground">

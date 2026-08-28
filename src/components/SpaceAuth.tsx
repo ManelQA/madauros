@@ -219,7 +219,7 @@ export function SpaceShell({ space, children }: { space: SpaceKey; children: Rea
 }
 
 export function Wordmark({ space }: { space: SpaceKey }) {
-  const colors = ["text-brand-blue", "text-brand-red", "text-brand-yellow", "text-brand-blue", "text-brand-green", "text-brand-red"];
+  const colors = ["text-brand-green", "text-brand-red"];
   const letters = "madauros".split("");
   return (
     <div dir="ltr" className="font-wordmark text-3xl tracking-tight">
