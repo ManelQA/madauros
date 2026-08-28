@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TalameedRouteImport } from './routes/talameed'
+import { Route as TaleemRouteImport } from './routes/taleem'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const TalameedRoute = TalameedRouteImport.update({
   path: '/talameed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TaleemRoute = TaleemRouteImport.update({
+  id: '/taleem',
+  path: '/taleem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/talameed'
+  fullPaths: '/' | '/talameed' | '/taleem'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/talameed'
-  id: '__root__' | '/' | '/talameed'
+  to: '/' | '/talameed' | '/taleem'
+  id: '__root__' | '/' | '/talameed' | '/taleem'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TalameedRoute: typeof TalameedRoute
+  TaleemRoute: typeof TaleemRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TalameedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/taleem': {
+      id: '/taleem'
+      path: '/taleem'
+      fullPath: '/taleem'
+      preLoaderRoute: typeof TaleemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TalameedRoute: TalameedRoute,
+  TaleemRoute: TaleemRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
