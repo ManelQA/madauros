@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as TalameedRouteImport } from './routes/talameed'
+import { Route as TaleemRouteImport } from './routes/taleem'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TalameedRoute = TalameedRouteImport.update({
+  id: '/talameed',
+  path: '/talameed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaleemRoute = TaleemRouteImport.update({
+  id: '/taleem',
+  path: '/taleem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/talameed': typeof TalameedRoute
+  '/taleem': typeof TaleemRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/admin' | '/talameed' | '/taleem'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/admin' | '/talameed' | '/taleem'
+  id: '__root__' | '/' | '/admin' | '/talameed' | '/taleem'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  TalameedRoute: typeof TalameedRoute
+  TaleemRoute: typeof TaleemRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/talameed': {
+      id: '/talameed'
+      path: '/talameed'
+      fullPath: '/talameed'
+      preLoaderRoute: typeof TalameedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/taleem': {
+      id: '/taleem'
+      path: '/taleem'
+      fullPath: '/taleem'
+      preLoaderRoute: typeof TaleemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  TalameedRoute: TalameedRoute,
+  TaleemRoute: TaleemRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
