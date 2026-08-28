@@ -207,7 +207,7 @@ export function SpaceAuth({ space, children }: Props) {
               setMessage(null);
             }}
           >
-            {mode === "login" ? "إنشاء حساب" : "لدي حساب بالفعل"}
+            {mode === "login" ? "إنشاء حساب" : mode === "signup" ? "لدي حساب بالفعل" : "العودة لتسجيل الدخول"}
           </button>
           <button type="submit" disabled={busy} className="btn-primary">
             {busy ? "…" : mode === "login" ? "التالي" : mode === "signup" ? "تسجيل" : "إرسال الرابط"}
