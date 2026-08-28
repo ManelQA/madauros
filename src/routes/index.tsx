@@ -62,7 +62,7 @@ function StudentLogin() {
   const navigate = useNavigate();
   const client = getSpaceClient("talameed");
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -81,7 +81,13 @@ function StudentLogin() {
     setError(null);
     setMessage(null);
 
-    if (mode === "signup") {
+    if (mode === "forgot") {
+      const { error: err } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password?space=talameed`,
+      });
+      if (err) setError(translateError(err.message));
+      else setMessage("إذا كان هذا البريد مسجّلاً، فقد أرسلنا إليه رابطاً لإعادة تعيين كلمة المرور.");
+    } else if (mode === "signup") {
       const { error: err } = await client.auth.signUp({
         email,
         password,
@@ -107,9 +113,13 @@ function StudentLogin() {
   return (
     <div className="w-full max-w-[420px] rounded-[28px] border border-border bg-card px-8 py-10 sm:px-10">
       <h2 className="text-center text-2xl font-normal text-foreground">
-        {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+        {mode === "login" ? "تسجيل الدخول" : mode === "signup" ? "إنشاء حساب" : "نسيت كلمة المرور"}
       </h2>
-      <p className="mt-2 text-center text-sm text-muted-foreground">talameed.madauros</p>
+      <p className="mt-2 text-center text-sm text-muted-foreground">
+        {mode === "forgot"
+          ? "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور."
+          : "talameed.madauros"}
+      </p>
 
       <form onSubmit={submit} className="mt-8 space-y-5">
         <div className="field">
@@ -129,23 +139,39 @@ function StudentLogin() {
           </label>
         </div>
 
-        <div className="field">
-          <input
-            id="password"
-            type="password"
-            required
-            dir="ltr"
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder=" "
-            className="field-input"
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-          />
-          <label htmlFor="password" className="field-label">
-            كلمة المرور
-          </label>
-        </div>
+        {mode === "forgot" ? null : (
+          <div className="field">
+            <input
+              id="password"
+              type="password"
+              required
+              dir="ltr"
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder=" "
+              className="field-input"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+            />
+            <label htmlFor="password" className="field-label">
+              كلمة المرور
+            </label>
+          </div>
+        )}
+
+        {mode === "login" ? (
+          <button
+            type="button"
+            className="btn-text"
+            onClick={() => {
+              setMode("forgot");
+              setError(null);
+              setMessage(null);
+            }}
+          >
+            نسيت كلمة المرور؟
+          </button>
+        ) : null}
 
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         {message ? <p className="text-sm text-success">{message}</p> : null}
@@ -160,10 +186,10 @@ function StudentLogin() {
               setMessage(null);
             }}
           >
-            {mode === "login" ? "إنشاء حساب" : "لدي حساب بالفعل"}
+            {mode === "login" ? "إنشاء حساب" : mode === "signup" ? "لدي حساب بالفعل" : "العودة لتسجيل الدخول"}
           </button>
           <button type="submit" disabled={busy} className="btn-primary">
-            {busy ? "…" : mode === "login" ? "التالي" : "تسجيل"}
+            {busy ? "…" : mode === "login" ? "التالي" : mode === "signup" ? "تسجيل" : "إرسال الرابط"}
           </button>
         </div>
       </form>
