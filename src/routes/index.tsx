@@ -33,12 +33,12 @@ function Index() {
       <div className="text-center">
         <div dir="ltr" className="font-wordmark text-5xl tracking-tight">
           <span className="text-brand-green">m</span>
-          <span className="text-brand-red">a</span>
+          <span className="text-brand-green">a</span>
           <span className="text-brand-green">d</span>
-          <span className="text-brand-red">a</span>
-          <span className="text-brand-green">u</span>
+          <span className="text-brand-green">a</span>
+          <span className="text-brand-red">u</span>
           <span className="text-brand-red">r</span>
-          <span className="text-brand-green">o</span>
+          <span className="text-brand-red">o</span>
           <span className="text-brand-red">s</span>
         </div>
         <h1 className="mt-4 text-xl font-normal text-foreground">اختر فضاءك</h1>
