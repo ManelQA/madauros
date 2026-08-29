@@ -53,7 +53,49 @@ function AdminDashboard({
   client: SupabaseClient<Database>;
   signOut: () => Promise<void>;
 }) {
+  const [tab, setTab] = useState<Tab>("accounts");
+
+  return (
+    <div className="min-h-screen bg-canvas">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4">
+          <Wordmark space="admin" />
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground" dir="ltr">
+              {email}
+            </span>
+            <button type="button" onClick={signOut} className="btn-text">
+              تسجيل الخروج
+            </button>
+          </div>
+        </div>
+        <nav className="mx-auto flex max-w-5xl flex-wrap gap-2 px-4 pb-3">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              className={tab === t.key ? "btn-primary" : "btn-text"}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        {tab === "accounts" ? <AccountsPanel client={client} /> : null}
+        {tab === "users" ? <UsersPanel client={client} /> : null}
+        {tab === "levels" ? <LevelsPanel client={client} /> : null}
+        {tab === "classes" ? <ClassesPanel client={client} /> : null}
+      </main>
+    </div>
+  );
+}
+
+function AccountsPanel({ client }: { client: SupabaseClient<Database> }) {
   const [rows, setRows] = useState<ProfileRow[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "all">("pending");
   const [busyId, setBusyId] = useState<string | null>(null);
