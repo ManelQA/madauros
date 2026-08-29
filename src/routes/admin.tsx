@@ -2,10 +2,22 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SpaceAuth, Wordmark } from "@/components/SpaceAuth";
+import { LevelsPanel } from "@/components/admin/LevelsPanel";
+import { ClassesPanel } from "@/components/admin/ClassesPanel";
+import { UsersPanel } from "@/components/admin/UsersPanel";
 import type { Database } from "@/integrations/supabase/types";
 import { SPACE_LABEL, STATUS_LABEL, type SpaceKey } from "@/lib/spaces";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type Tab = "accounts" | "users" | "levels" | "classes";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "accounts", label: "المصادقة" },
+  { key: "users", label: "المستخدمون" },
+  { key: "levels", label: "المستويات" },
+  { key: "classes", label: "الأقسام" },
+];
+
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
