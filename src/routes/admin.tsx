@@ -2,10 +2,22 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { SpaceAuth, Wordmark } from "@/components/SpaceAuth";
+import { LevelsPanel } from "@/components/admin/LevelsPanel";
+import { ClassesPanel } from "@/components/admin/ClassesPanel";
+import { UsersPanel } from "@/components/admin/UsersPanel";
 import type { Database } from "@/integrations/supabase/types";
 import { SPACE_LABEL, STATUS_LABEL, type SpaceKey } from "@/lib/spaces";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type Tab = "accounts" | "users" | "levels" | "classes";
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "accounts", label: "المصادقة" },
+  { key: "users", label: "المستخدمون" },
+  { key: "levels", label: "المستويات" },
+  { key: "classes", label: "الأقسام" },
+];
+
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -41,7 +53,49 @@ function AdminDashboard({
   client: SupabaseClient<Database>;
   signOut: () => Promise<void>;
 }) {
+  const [tab, setTab] = useState<Tab>("accounts");
+
+  return (
+    <div className="min-h-screen bg-canvas">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4">
+          <Wordmark space="admin" />
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground" dir="ltr">
+              {email}
+            </span>
+            <button type="button" onClick={signOut} className="btn-text">
+              تسجيل الخروج
+            </button>
+          </div>
+        </div>
+        <nav className="mx-auto flex max-w-5xl flex-wrap gap-2 px-4 pb-3">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              className={tab === t.key ? "btn-primary" : "btn-text"}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
+      </header>
+
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        {tab === "accounts" ? <AccountsPanel client={client} /> : null}
+        {tab === "users" ? <UsersPanel client={client} /> : null}
+        {tab === "levels" ? <LevelsPanel client={client} /> : null}
+        {tab === "classes" ? <ClassesPanel client={client} /> : null}
+      </main>
+    </div>
+  );
+}
+
+function AccountsPanel({ client }: { client: SupabaseClient<Database> }) {
   const [rows, setRows] = useState<ProfileRow[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "all">("pending");
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -80,26 +134,12 @@ function AdminDashboard({
   const visible = rows.filter((r) => (filter === "pending" ? r.status === "pending" : true));
 
   return (
-    <div className="min-h-screen bg-canvas">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <Wordmark space="admin" />
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground" dir="ltr">
-              {email}
-            </span>
-            <button type="button" onClick={signOut} className="btn-text">
-              تسجيل الخروج
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <h1 className="text-xl font-semibold text-foreground">مصادقة الحسابات الجديدة</h1>
+    <section>
+        <h2 className="text-lg font-semibold text-foreground">مصادقة الحسابات الجديدة</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           صادق على حسابات التلاميذ والأساتذة قبل السماح لهم بالدخول إلى فضاءاتهم.
         </p>
+
 
         <div className="mt-6 flex gap-2">
           <button
@@ -164,7 +204,7 @@ function AdminDashboard({
             </ul>
           )}
         </div>
-      </main>
-    </div>
+    </section>
   );
 }
+
