@@ -92,26 +92,12 @@ function AdminDashboard({
   const visible = rows.filter((r) => (filter === "pending" ? r.status === "pending" : true));
 
   return (
-    <div className="min-h-screen bg-canvas">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <Wordmark space="admin" />
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground" dir="ltr">
-              {email}
-            </span>
-            <button type="button" onClick={signOut} className="btn-text">
-              تسجيل الخروج
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <h1 className="text-xl font-semibold text-foreground">مصادقة الحسابات الجديدة</h1>
+    <section>
+        <h2 className="text-lg font-semibold text-foreground">مصادقة الحسابات الجديدة</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           صادق على حسابات التلاميذ والأساتذة قبل السماح لهم بالدخول إلى فضاءاتهم.
         </p>
+
 
         <div className="mt-6 flex gap-2">
           <button
