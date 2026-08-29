@@ -176,7 +176,7 @@ function AdminDashboard({
             </ul>
           )}
         </div>
-      </main>
-    </div>
+    </section>
   );
 }
+
