@@ -1,14 +1,12 @@
-# Madauros Learning Hub
+# Sweet Test Hub
 
-3 subdomains with isolated sessions with connexion inscription in a simple google interface with text written in arabic. The subdomains are talameed.madauros, taleem.madauros and admin.madauros in the admin subdomain there is a super admin who validated new created accounts from the other domains
+Import https://github.com/michael5787/sweet-test-station
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://madauros.lovable.app
-
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/bc023c98-3b80-44e7-89b5-9c9b66089b12).
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/afc5f1fc-afac-4bba-ab59-34b628dae1f2).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
